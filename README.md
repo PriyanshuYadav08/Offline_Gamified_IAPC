@@ -1,4 +1,3 @@
-
 # Offline-First Gamified STEM Learning Platform (Flutter)
 
 🚀 A Flutter app for rural schools that makes STEM subjects engaging through **mini-games, adaptive learning, and teacher analytics** — built with Flutter, Flame, Firebase, and modern offline-first architecture.
