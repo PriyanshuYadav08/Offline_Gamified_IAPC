@@ -40,8 +40,9 @@
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/iapc-stem-platform.git
+git clone https://github.com/PriyanshuYadav08/Offline_Gamified_IAPC.git
 cd iapc-stem-platform/client
+```
 
 ### 2. Contribution
 PRs are welcome! For major changes, please open an issue first to discuss what you’d like to change.
