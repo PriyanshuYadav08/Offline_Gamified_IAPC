@@ -12,6 +12,12 @@
 .swiftpm/
 migrate_working_dir/
 
+# Firebase/Google services
+android/app/google-services.json
+firebase.json
+lib/firebase_options.dart
+.flutter-plugins-dependencies
+
 # IntelliJ related
 *.iml
 *.ipr
