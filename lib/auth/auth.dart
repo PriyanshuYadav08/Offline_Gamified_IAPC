@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../student/dashboard_page.dart';
 
 // final FirebaseAuth auth = FirebaseAuth.instance;
 final _firebase = FirebaseAuth.instance;
@@ -26,7 +27,21 @@ class _AuthScreenState extends State<AuthScreen> {
     _formKey.currentState!.save();
 
     if (_isLogin) {
-      //login logic
+      try {
+        final userCred = await _firebase.signInWithEmailAndPassword(
+          email: _emailEntered,
+          password: _passwordEntered,
+        );
+        print(userCred);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (ctx) => const DashboardPage()),
+        );
+      } on FirebaseAuthException catch (error) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message ?? 'Login Failed 😣')),
+        );
+      }
     } else {
       try {
         final userCred = await _firebase.createUserWithEmailAndPassword(
@@ -34,6 +49,9 @@ class _AuthScreenState extends State<AuthScreen> {
           password: _passwordEntered,
         );
         print(userCred);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (ctx) => const DashboardPage()),
+        );
       } on FirebaseAuthException catch (error) {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -42,15 +60,13 @@ class _AuthScreenState extends State<AuthScreen> {
       }
     }
   }
-
-  // final TextEditingController _emailController = TextEditingController();
-  // final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
+      
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
