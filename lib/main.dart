@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-// import 'auth/login_page.dart';
-// import 'auth/signup_page.dart';
 import 'auth/auth.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // Set the color of the status bar
+    statusBarIconBrightness: Brightness.light, // Set the icon color in the status bar
+  ));
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -48,7 +52,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => const AuthScreen(),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const AuthScreen(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(opacity: animation, child: child);
       },
@@ -60,27 +65,21 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image(image: AssetImage('assets/icons/icon_only.png')),
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image(image: AssetImage('assets/icons/icon.png')),
 
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            Text(
-              'STEMQuest',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
+              const Text(
+                'Your our study partner',
+                style: TextStyle(color: Colors.white70, fontSize: 22),
               ),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Your our study partner',
-              style: TextStyle(color: Colors.white70, fontSize: 22),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../student/dashboard_page.dart';
+import 'package:flutter/services.dart';
 
 // final FirebaseAuth auth = FirebaseAuth.instance;
 final _firebase = FirebaseAuth.instance;
@@ -64,6 +65,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       
