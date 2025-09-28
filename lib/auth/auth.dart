@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../student/dashboard_page.dart';
+import '../dashboard/dashboard_page.dart';
+import '../services/firebase_service.dart';
 import 'package:flutter/services.dart';
 
 // final FirebaseAuth auth = FirebaseAuth.instance;
@@ -34,8 +35,19 @@ class _AuthScreenState extends State<AuthScreen> {
           password: _passwordEntered,
         );
         print(userCred);
+        final user = _firebase.currentUser;
+        if (user != null) {
+          await FirebaseService().saveUserProfile(
+            uid: user.uid,
+            role: "student",
+            name: user.displayName ?? "New User",
+            email: user.email!,
+            school: "Govt. School Delhi",
+            className: "10A",
+          );
+        }
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const DashboardPage()),
+          MaterialPageRoute(builder: (ctx) => DashboardPage(uid: user!.uid)),
         );
       } on FirebaseAuthException catch (error) {
         ScaffoldMessenger.of(context).clearSnackBars();
@@ -50,8 +62,19 @@ class _AuthScreenState extends State<AuthScreen> {
           password: _passwordEntered,
         );
         print(userCred);
+        final user = _firebase.currentUser;
+        if (user != null) {
+          await FirebaseService().saveUserProfile(
+            uid: user.uid,
+            role: "student", // or teacher
+            name: user.displayName ?? "New User",
+            email: user.email!,
+            school: "Govt. School Delhi",
+            className: "8A",
+          );
+        }
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const DashboardPage()),
+          MaterialPageRoute(builder: (ctx) => DashboardPage(uid: user!.uid)),
         );
       } on FirebaseAuthException catch (error) {
         ScaffoldMessenger.of(context).clearSnackBars();
