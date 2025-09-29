@@ -36,16 +36,6 @@ class _AuthScreenState extends State<AuthScreen> {
         );
         print(userCred);
         final user = _firebase.currentUser;
-        if (user != null) {
-          await FirebaseService().saveUserProfile(
-            uid: user.uid,
-            role: "student",
-            name: user.displayName ?? "New User",
-            email: user.email!,
-            school: "Govt. School Delhi",
-            className: "10A",
-          );
-        }
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (ctx) => DashboardPage(uid: user!.uid)),
         );
@@ -63,11 +53,11 @@ class _AuthScreenState extends State<AuthScreen> {
         );
         print(userCred);
         final user = _firebase.currentUser;
-        if (user != null) {
+        if (user != null && !_isLogin) {
           await FirebaseService().saveUserProfile(
             uid: user.uid,
-            role: "student", // or teacher
-            name: user.displayName ?? "New User",
+            role: "student", 
+            name: "New User",
             email: user.email!,
             school: "Govt. School Delhi",
             className: "8A",
@@ -84,8 +74,8 @@ class _AuthScreenState extends State<AuthScreen> {
       }
     }
   }
-  bool _obscureText = true;
 
+  bool _obscureText = true;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);

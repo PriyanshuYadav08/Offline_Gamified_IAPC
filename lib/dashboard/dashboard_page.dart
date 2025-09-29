@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../services/firebase_service.dart';
+import '../profile/user_profile.dart';
 
 class DashboardPage extends StatelessWidget {
   final String uid;
@@ -17,8 +17,8 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      future: FirebaseService().getUserProfile(uid),
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
@@ -39,7 +39,11 @@ class DashboardPage extends StatelessWidget {
                 icon: const Icon(Icons.account_circle),
                 tooltip: 'Profile',
                 onPressed: () {
-                  // TODO: Navigate to profile page
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (ctx) => UserProfilePage(uid: uid),
+                    ),
+                  );
                 },
               ),
             ],
@@ -49,44 +53,11 @@ class DashboardPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Card(
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "XP: ${data['xp'] ?? 0}",
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            Text(
-                              "Streak: ${data['streak'] ?? 0} days",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            Text(
-                              "Badges: " +
-                                  ((data['badges'] as List?)?.join(', ') ??
-                                      '-'),
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ],
-                        ),
-                        if (data['role'] != null)
-                          Chip(
-                            label: Text(data['role'].toString().toUpperCase()),
-                          ),
-                      ],
-                    ),
-                  ),
+                Text(
+                  'Choose a Game/Test',
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 Expanded(
                   child: GridView.builder(
                     gridDelegate:
