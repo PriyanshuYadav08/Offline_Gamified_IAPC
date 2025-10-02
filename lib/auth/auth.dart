@@ -59,8 +59,8 @@ class _AuthScreenState extends State<AuthScreen> {
             role: "student", 
             name: "New User",
             email: user.email!,
-            school: "Govt. School Delhi",
-            className: "8A",
+            school: "Update School",
+            className: "Update Class",
           );
         }
         Navigator.of(context).pushReplacement(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/firebase_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../auth/auth.dart';
 
 class EditProfilePage extends StatefulWidget {
   final String uid;
@@ -10,6 +12,15 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  Future<void> _logOut() async {
+    await FirebaseAuth.instance.signOut();
+    if (mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (ctx) => const AuthScreen()),
+        (route) => false,
+      );
+    }
+  }
   final _formKey = GlobalKey<FormState>();
   TextEditingController? _nameController;
   TextEditingController? _emailController;
@@ -39,7 +50,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
-    if (_nameController == null || _emailController == null || _schoolController == null || _classController == null) return;
+    if (_nameController == null ||
+        _emailController == null ||
+        _schoolController == null ||
+        _classController == null)
+      return;
     await FirebaseService().saveUserProfile(
       uid: widget.uid,
       role: _role ?? 'student',
@@ -53,15 +68,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading || _nameController == null || _emailController == null || _schoolController == null || _classController == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+    if (_loading ||
+        _nameController == null ||
+        _emailController == null ||
+        _schoolController == null ||
+        _classController == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profile'),
-      ),
+      appBar: AppBar(title: const Text('Edit Profile')),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
@@ -71,14 +86,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Name'),
-                validator: (v) => v == null || v.trim().isEmpty ? 'Enter name' : null,
+                validator: (v) =>
+                    v == null || v.trim().isEmpty ? 'Enter name' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
-                validator: (v) => v == null || !v.contains('@') ? 'Enter valid email' : null,
+                validator: (v) =>
+                    v == null || !v.contains('@') ? 'Enter valid email' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -104,6 +121,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ElevatedButton(
                 onPressed: _saveProfile,
                 child: const Text('Save'),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _logOut,
+                child: const Text('Log Out'),
               ),
             ],
           ),

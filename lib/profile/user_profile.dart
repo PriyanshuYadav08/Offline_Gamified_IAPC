@@ -22,7 +22,7 @@ class UserProfilePage extends StatelessWidget {
 						);
 					}
 					final data = snapshot.data!.data()!;
-					final badgeList = (data['badges'] as List?) ?? [];
+					// final badgeList = (data['badges'] as List?) ?? [];
 					return Scaffold(
 						appBar: AppBar(
 							title: const Text('Profile'),
@@ -32,7 +32,7 @@ class UserProfilePage extends StatelessWidget {
 							elevation: 0,
 							actions: [
 								IconButton(
-									icon: const Icon(Icons.edit),
+									icon: const Icon(Icons.settings),
 									tooltip: 'Edit Profile',
 									onPressed: () async {
 										await Navigator.of(context).push(
@@ -88,7 +88,7 @@ class UserProfilePage extends StatelessWidget {
 											],
 										),
 									),
-									const SizedBox(height: 24),
+									const SizedBox(height: 16),
 									Padding(
 										padding: const EdgeInsets.symmetric(horizontal: 24.0),
 										child: Column(
@@ -96,7 +96,7 @@ class UserProfilePage extends StatelessWidget {
 												_profileTile(Icons.email, 'Email', data['email'] ?? '-'),
 												_profileTile(Icons.school, 'School', data['school'] ?? '-'),
 												_profileTile(Icons.class_, 'Class', data['class'] ?? '-'),
-												const SizedBox(height: 16),
+												const SizedBox(height: 8),
 												Row(
 													mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 													children: [
@@ -104,22 +104,22 @@ class UserProfilePage extends StatelessWidget {
 														_statCard('Streak', '${data['streak'] ?? 0} days', context),
 													],
 												),
-												const SizedBox(height: 24),
-												Align(
-													alignment: Alignment.centerLeft,
-													child: Text(
-														'Badges',
-														style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-													),
-												),
-												const SizedBox(height: 8),
-												badgeList.isEmpty
-																? const Text('No badges yet.')
-																: Wrap(
-																		spacing: 8,
-																		children: badgeList.map<Widget>((b) => Chip(label: Text(b.toString()))).toList(),
-																	),
-												const SizedBox(height: 32),
+												const SizedBox(height: 16),
+												// Align(
+												// 	alignment: Alignment.centerLeft,
+												// 	child: Text(
+												// 		'Badges',
+												// 		style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+												// 	),
+												// ),
+												// const SizedBox(height: 8),
+												// badgeList.isEmpty
+												// 				? const Text('No badges yet.')
+												// 				: Wrap(
+												// 						spacing: 8,
+												// 						children: badgeList.map<Widget>((b) => Chip(label: Text(b.toString()))).toList(),
+												// 					),
+												// const SizedBox(height: 32),
 											],
 										),
 									),
