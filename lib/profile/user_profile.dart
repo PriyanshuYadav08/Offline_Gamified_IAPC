@@ -105,21 +105,6 @@ class UserProfilePage extends StatelessWidget {
 													],
 												),
 												const SizedBox(height: 16),
-												// Align(
-												// 	alignment: Alignment.centerLeft,
-												// 	child: Text(
-												// 		'Badges',
-												// 		style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-												// 	),
-												// ),
-												// const SizedBox(height: 8),
-												// badgeList.isEmpty
-												// 				? const Text('No badges yet.')
-												// 				: Wrap(
-												// 						spacing: 8,
-												// 						children: badgeList.map<Widget>((b) => Chip(label: Text(b.toString()))).toList(),
-												// 					),
-												// const SizedBox(height: 32),
 											],
 										),
 									),

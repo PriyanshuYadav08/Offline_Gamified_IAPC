@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../auth/auth.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -66,6 +67,46 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (mounted) Navigator.of(context).pop(true);
   }
 
+  Future<void> _verifyTeacherPasscode(String enteredPasscode) async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection("config")
+          .doc("teacherPasskey")
+          .get();
+      if (!snapshot.exists) {
+        throw Exception("Passcode config missing!");
+      }
+      final storedPasscode = snapshot.data()!["key"];
+      if (enteredPasscode == storedPasscode) {
+        final uid = FirebaseAuth.instance.currentUser!.uid;
+        await FirebaseFirestore.instance.collection("users").doc(uid).update({
+          "role" : "teacher"
+        });
+        setState(() {
+          _role = "teacher";
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("You are now a teacher! ✅")),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Invalid passcode ❌")),
+          );
+        }
+      }
+    } catch (e) {
+      print("Error verifying passcode: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading ||
@@ -107,16 +148,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 controller: _classController,
                 decoration: const InputDecoration(labelText: 'Class'),
               ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: _role,
-                items: const [
-                  DropdownMenuItem(value: 'student', child: Text('Student')),
-                  DropdownMenuItem(value: 'teacher', child: Text('Teacher')),
-                ],
-                onChanged: (v) => setState(() => _role = v),
-                decoration: const InputDecoration(labelText: 'Role'),
-              ),
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _saveProfile,
@@ -126,6 +157,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ElevatedButton(
                 onPressed: _logOut,
                 child: const Text('Log Out'),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () async {
+                  final enteredPasscode = await showDialog<String>(
+                    context: context,
+                    builder: (ctx) {
+                      String input = "";
+                      return AlertDialog(
+                        title: Text("Enter Teacher Passcode"),
+                        content: TextField(
+                          onChanged: (val) => input = val,
+                          decoration: InputDecoration(hintText: "Passcode"),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            child: Text("Cancel"),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx, input),
+                            child: Text("Submit"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (enteredPasscode != null && enteredPasscode.isNotEmpty) {
+                    await _verifyTeacherPasscode(enteredPasscode);
+                  }
+                },
+                child: Text("Become a Teacher"),
               ),
             ],
           ),
