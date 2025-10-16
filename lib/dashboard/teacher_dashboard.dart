@@ -32,7 +32,6 @@ class TeacherDashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Create Quiz Button
             ElevatedButton.icon(
               icon: const Icon(Icons.add_circle_outline),
               label: const Text("Create New Quiz"),

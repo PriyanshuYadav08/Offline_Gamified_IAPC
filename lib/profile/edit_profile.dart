@@ -22,6 +22,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       );
     }
   }
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController? _nameController;
   TextEditingController? _emailController;
@@ -80,7 +81,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (enteredPasscode == storedPasscode) {
         final uid = FirebaseAuth.instance.currentUser!.uid;
         await FirebaseFirestore.instance.collection("users").doc(uid).update({
-          "role" : "teacher"
+          "role": "teacher",
         });
         setState(() {
           _role = "teacher";
@@ -92,17 +93,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Invalid passcode ❌")),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("Invalid passcode ❌")));
         }
       }
     } catch (e) {
       print("Error verifying passcode: $e");
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: $e")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Error: $e")));
       }
     }
   }
@@ -133,10 +134,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (v) =>
-                    v == null || !v.contains('@') ? 'Enter valid email' : null,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  enabled: false, // Makes it visually disabled (grayed out)
+                ),
+                readOnly: true, // Prevents editing
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -154,10 +156,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: const Text('Save'),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _logOut,
-                child: const Text('Log Out'),
-              ),
+              ElevatedButton(onPressed: _logOut, child: const Text('Log Out')),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {

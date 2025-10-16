@@ -36,8 +36,6 @@ class DashboardPage extends StatelessWidget {
 
         final data = snapshot.data!.data()!;
         final role = data['role'] ?? 'student';
-
-        // 🔁 If teacher → show Teacher Dashboard
         if (role == 'teacher') {
           return TeacherDashboardPage(uid: uid);
         }
