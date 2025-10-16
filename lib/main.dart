@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'auth/auth.dart';
-import 'package:flutter/services.dart';
+import 'dashboard/dashboard_page.dart';
 
 void main() async {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent, // Set the color of the status bar
-    statusBarIconBrightness: Brightness.light, // Set the icon color in the status bar
+  WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
   ));
 
-  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   runApp(const MyApp());
 }
 
@@ -23,11 +26,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'IAPC Project',
+      title: 'STEMQuest',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 0, 76, 255),
+          seedColor: const Color.fromARGB(255, 90, 0, 255),
         ),
+        useMaterial3: true,
       ),
       home: const SplashScreen(),
     );
@@ -45,18 +49,56 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(_createRoute());
-    });
+    _navigateNext();
   }
 
-  Route _createRoute() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          const AuthScreen(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(opacity: animation, child: child);
-      },
+  Future<void> _navigateNext() async {
+    await Future.delayed(const Duration(seconds: 2));
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final shouldLogout = await _shouldAutoLogout();
+
+      if (shouldLogout) {
+        await FirebaseAuth.instance.signOut();
+        _goToAuth();
+      } else {
+        // User still valid
+        _goToDashboard(user.uid);
+      }
+    } else {
+      _goToAuth();
+    }
+  }
+
+  Future<bool> _shouldAutoLogout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastLogin = prefs.getInt('login_time') ?? 0;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final timeout = Duration(days: 7).inMilliseconds;
+    return now - lastLogin > timeout;
+  }
+
+  void _goToAuth() {
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const AuthScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    );
+  }
+
+  void _goToDashboard(String uid) {
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            DashboardPage(uid: uid),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
     );
   }
 
@@ -70,13 +112,15 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image(image: AssetImage('assets/icons/icon.png')),
-
+              Image.asset('assets/icons/icon.png', width: 240),
               const SizedBox(height: 24),
-
               const Text(
-                'Your our study partner',
-                style: TextStyle(color: Colors.white70, fontSize: 22),
+                'Your Study Partner',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),

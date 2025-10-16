@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../dashboard/dashboard_page.dart';
 import '../services/firebase_service.dart';
-import 'package:flutter/services.dart';
 
-// final FirebaseAuth auth = FirebaseAuth.instance;
 final _firebase = FirebaseAuth.instance;
 
 class AuthScreen extends StatefulWidget {
@@ -16,73 +16,85 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
-
   var _isLogin = true;
   var _emailEntered = '';
   var _passwordEntered = '';
+  bool _isLoading = false;
+  bool _obscureText = true;
+
+  Future<void> _storeLoginTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('login_time', DateTime.now().millisecondsSinceEpoch);
+  }
 
   Future<void> _submit() async {
     final isValid = _formKey.currentState!.validate();
-    if (!isValid) {
-      return;
-    }
-    _formKey.currentState!.save();
+    if (!isValid) return;
 
-    if (_isLogin) {
-      try {
-        final userCred = await _firebase.signInWithEmailAndPassword(
+    _formKey.currentState!.save();
+    setState(() => _isLoading = true);
+
+    try {
+      UserCredential userCred;
+
+      if (_isLogin) {
+        userCred = await _firebase.signInWithEmailAndPassword(
           email: _emailEntered,
           password: _passwordEntered,
         );
-        print(userCred);
-        final user = _firebase.currentUser;
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => DashboardPage(uid: user!.uid)),
-        );
-      } on FirebaseAuthException catch (error) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.message ?? 'Login Failed 😣')),
-        );
-      }
-    } else {
-      try {
-        final userCred = await _firebase.createUserWithEmailAndPassword(
+      } else {
+        userCred = await _firebase.createUserWithEmailAndPassword(
           email: _emailEntered,
           password: _passwordEntered,
         );
-        print(userCred);
-        final user = _firebase.currentUser;
-        if (user != null && !_isLogin) {
+
+        final user = userCred.user;
+        if (user != null) {
           await FirebaseService().saveUserProfile(
             uid: user.uid,
-            role: "student", 
+            role: "student",
             name: "New User",
             email: user.email!,
             school: "Update School",
             className: "Update Class",
           );
         }
+      }
+
+      await _storeLoginTime();
+      final user = _firebase.currentUser;
+      if (user != null) {
+        if (!mounted) return;
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => DashboardPage(uid: user!.uid)),
-        );
-      } on FirebaseAuthException catch (error) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.message ?? 'Authentication Failed 😣')),
+          MaterialPageRoute(builder: (ctx) => DashboardPage(uid: user.uid)),
         );
       }
+    } on FirebaseAuthException catch (error) {
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(content: Text(error.message ?? 'Authentication Failed 😣')),
+        );
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(content: Text('An unexpected error occurred.')),
+        );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  bool _obscureText = true;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      
+      appBar: AppBar(
+        title: Text(_isLogin ? 'Login' : 'Sign Up'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -91,7 +103,6 @@ class _AuthScreenState extends State<AuthScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
-                // controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(),
@@ -107,15 +118,12 @@ class _AuthScreenState extends State<AuthScreen> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  _emailEntered = value!;
-                },
+                onSaved: (value) => _emailEntered = value!,
               ),
 
               const SizedBox(height: 16),
 
               TextFormField(
-                // controller: _passwordController,
                 obscureText: _obscureText,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -124,51 +132,47 @@ class _AuthScreenState extends State<AuthScreen> {
                     icon: Icon(
                       _obscureText ? Icons.visibility : Icons.visibility_off,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
+                    onPressed: () =>
+                        setState(() => _obscureText = !_obscureText),
                   ),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().length < 6) {
-                    return 'Password must be at least 6 characters long.';
+                    return 'Password must be at least 6 characters.';
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  _passwordEntered = value!;
-                },
+                onSaved: (value) => _passwordEntered = value!,
               ),
 
               const SizedBox(height: 24),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer,
-                  ),
-                  child: Text(_isLogin ? 'Login' : 'Sign Up'),
-                ),
-              ),
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _submit,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        child: Text(
+                          _isLogin ? 'Login' : 'Sign Up',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
 
               const SizedBox(height: 12),
 
               TextButton(
-                onPressed: () {
-                  setState(() {
-                    _isLogin = !_isLogin;
-                  });
-                },
+                onPressed: () => setState(() => _isLogin = !_isLogin),
                 child: Text(
                   _isLogin
-                      ? "Don't have an account? Sign up"
-                      : "Already have an account? Log in",
+                      ? "Don't have an account? Sign Up"
+                      : "Already have an account? Log In",
                 ),
               ),
             ],
