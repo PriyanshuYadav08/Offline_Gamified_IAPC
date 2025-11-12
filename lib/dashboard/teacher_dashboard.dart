@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../profile/user_profile.dart';
+import '../teacher_functions/students_in_class.dart';
 
 class TeacherDashboardPage extends StatelessWidget {
   final String uid;
@@ -52,7 +53,11 @@ class TeacherDashboardPage extends StatelessWidget {
                 minimumSize: const Size.fromHeight(50),
               ),
               onPressed: () {
-                // TODO: Navigate to student list page
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (ctx) => const StudentsInClassPage(),
+                  ),
+                );
               },
             ),
             const SizedBox(height: 16),
