@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../profile/user_profile.dart';
 import 'teacher_dashboard.dart';
+import '../student_functions/live_quizzes.dart';
 
 class DashboardPage extends StatelessWidget {
   final String uid;
@@ -10,11 +11,12 @@ class DashboardPage extends StatelessWidget {
   // Student game list
   static const List<Map<String, dynamic>> games = [
     {'title': 'Math Quiz', 'icon': Icons.calculate},
-    {'title': 'Physics Puzzle', 'icon': Icons.science},
-    {'title': 'Chemistry Match', 'icon': Icons.bubble_chart},
-    {'title': 'Biology Test', 'icon': Icons.eco},
-    {'title': 'Coding Challenge', 'icon': Icons.code},
-    {'title': 'General Knowledge', 'icon': Icons.quiz},
+    {'title': 'See Live Quizzes', 'icon': Icons.quiz},
+    // {'title': 'Physics Puzzle', 'icon': Icons.science},
+    // {'title': 'Chemistry Match', 'icon': Icons.bubble_chart},
+    // {'title': 'Biology Test', 'icon': Icons.eco},
+    // {'title': 'Coding Challenge', 'icon': Icons.code},
+    // {'title': 'General Knowledge', 'icon': Icons.quiz},
   ];
 
   @override
@@ -86,7 +88,16 @@ class DashboardPage extends StatelessWidget {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(16),
                           onTap: () {
-                            // TODO: Navigate to specific game/test page
+                            if (game['title'] == 'See Live Quizzes') {
+                              final studentClass = data['class'] ?? '';
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (ctx) => LiveQuizzesPage(studentClass: studentClass),
+                                ),
+                              );
+                            } else {
+                              // TODO: Navigate to other game/test pages
+                            }
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,

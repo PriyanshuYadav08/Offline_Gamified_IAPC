@@ -70,7 +70,7 @@ class StudentsInClassPage extends StatelessWidget {
 
               if (docs.isEmpty) {
                 return Center(
-                  child: Text('No students found in your class: $className'),
+                  child: Text('No students found in your class - $className'),
                 );
               }
 
