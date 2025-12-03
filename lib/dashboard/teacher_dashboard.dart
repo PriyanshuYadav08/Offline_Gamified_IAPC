@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../profile/user_profile.dart';
 import '../teacher_functions/create_quiz.dart';
 import '../teacher_functions/students_in_class.dart';
+import '../teacher_functions/teacher_analytics.dart';
 
 class TeacherDashboardPage extends StatelessWidget {
   final String uid;
@@ -73,7 +74,11 @@ class TeacherDashboardPage extends StatelessWidget {
                 minimumSize: const Size.fromHeight(50),
               ),
               onPressed: () {
-                // TODO: Navigate to analytics page
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const TeacherQuizzesAnalyticsPage(),
+                  ),
+                );
               },
             ),
           ],
