@@ -38,7 +38,7 @@ class QuizResultPage extends StatelessWidget {
 
             // Score + percentage
             Text(
-              'Score: $score / $totalMarks  (${percent.toStringAsFixed(1)}%)',
+              'Score : $score / $totalMarks  (${percent.toStringAsFixed(1)}%)',
               style: const TextStyle(fontSize: 16),
             ),
 
@@ -91,7 +91,7 @@ class QuizResultPage extends StatelessWidget {
 
                                 // Your answer
                                 Text(
-                                  'Your answer: ${a.selectedAnswerText.isEmpty ? 'Not answered' : a.selectedAnswerText}',
+                                  'Your answer : ${a.selectedAnswerText.isEmpty ? 'Not answered' : a.selectedAnswerText}',
                                   style: TextStyle(
                                     color: a.isCorrect
                                         ? Colors.green
@@ -100,17 +100,11 @@ class QuizResultPage extends StatelessWidget {
                                   ),
                                 ),
 
-                                // Correct answer
-                                Text(
-                                  'Correct answer: ${a.correctAnswerText}',
-                                  style: const TextStyle(fontSize: 13),
-                                ),
-
                                 const SizedBox(height: 4),
 
                                 // Marks
                                 Text(
-                                  'Marks: ${a.awardedMarks} / ${a.marks}',
+                                  'Marks : ${a.awardedMarks} / ${a.marks}',
                                   style: const TextStyle(fontSize: 13),
                                 ),
                               ],
@@ -141,10 +135,10 @@ class QuizResultPage extends StatelessWidget {
 
   // Helper: label based on percentage
   static String _performanceLabel(double percent) {
-    if (percent >= 90) return 'Excellent! 🎉';
-    if (percent >= 75) return 'Great job! 💪';
-    if (percent >= 50) return 'Good effort, keep practicing 🙂';
-    return 'Keep trying, you can improve 💡';
+    if (percent >= 90) return 'Excellent!';
+    if (percent >= 75) return 'Great job!';
+    if (percent >= 50) return 'Good effort, keep practicing';
+    return 'Keep trying, you can improve';
   }
 
   // Helper: color based on percentage

@@ -18,7 +18,7 @@ class QuizAnalyticsDetailPage extends StatelessWidget {
     final className = quizData['class'] ?? '';
     final totalQuestions = quizData['totalQuestions'] ?? 0;
     final duration = quizData['duration'] ?? 0;
-    
+
     final attemptsQuery = FirebaseFirestore.instance
         .collection('quiz_attempts')
         .where('quizId', isEqualTo: quizId);
@@ -82,9 +82,8 @@ class QuizAnalyticsDetailPage extends StatelessWidget {
 
           if (worstScore == (1 << 30)) worstScore = 0;
 
-          final double avgScore = totalAttempts == 0
-              ? 0
-              : totalScoreSum / totalAttempts;
+          final double avgScore =
+              totalAttempts == 0 ? 0 : totalScoreSum / totalAttempts;
           final double avgPercent = (totalMarksPossible == 0)
               ? 0
               : (avgScore / totalMarksPossible * 100);
@@ -124,51 +123,9 @@ class QuizAnalyticsDetailPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final doc = docs[index];
                       final data = doc.data();
-                      final score = (data['score'] ?? 0) as int;
-                      final totalMarks = (data['totalMarks'] ?? 0) as int;
-                      final correctCount = (data['correctCount'] ?? 0) as int;
-                      final wrongCount = (data['wrongCount'] ?? 0) as int;
-                      final studentId = data['studentId'] ?? '';
-                      final timestamp = data['completedAt'] as Timestamp?;
-                      final completedAt = timestamp?.toDate();
-
-                      final percent = totalMarks == 0
-                          ? 0.0
-                          : (score / totalMarks * 100);
-
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 4,
-                        ),
-                        child: ListTile(
-                          title: Text(
-                            'Student : ${data['name'] ?? studentId}',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Score : $score / $totalMarks '
-                                '(${percent.toStringAsFixed(1)}%)',
-                              ),
-                              Text(
-                                'Correct : $correctCount • Wrong : $wrongCount',
-                              ),
-                              if (completedAt != null)
-                                Text(
-                                  'Completed : ${completedAt.toLocal()}',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                            ],
-                          ),
-                          // Optional: onTap to open detailed answers page
-                          onTap: () {
-                            // you can navigate to a per-attempt detail page here
-                            // e.g., TeacherAttemptDetailPage(attemptId: doc.id, quizId: quizId);
-                          },
-                        ),
+                      return _AttemptTile(
+                        attemptData: data,
+                        attemptId: doc.id,
                       );
                     },
                   ),
@@ -178,6 +135,83 @@ class QuizAnalyticsDetailPage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _AttemptTile extends StatelessWidget {
+  final Map<String, dynamic> attemptData;
+  final String attemptId;
+
+  const _AttemptTile({
+    required this.attemptData,
+    required this.attemptId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final score = (attemptData['score'] ?? 0) as int;
+    final totalMarks = (attemptData['totalMarks'] ?? 0) as int;
+    final correctCount = (attemptData['correctCount'] ?? 0) as int;
+    final wrongCount = (attemptData['wrongCount'] ?? 0) as int;
+    final studentId = attemptData['studentId'] ?? '';
+    final timestamp = attemptData['completedAt'] as Timestamp?;
+    final completedAt = timestamp?.toDate();
+
+    final percent =
+        totalMarks == 0 ? 0.0 : (score / totalMarks * 100);
+
+    // Fetch user doc to get student name
+    final userDocFuture = FirebaseFirestore.instance
+        .collection('users')
+        .doc(studentId)
+        .get();
+
+    return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      future: userDocFuture,
+      builder: (context, snapshot) {
+        String displayName = studentId;
+
+        if (snapshot.hasData && snapshot.data!.exists) {
+          final userData = snapshot.data!.data();
+          if (userData != null && userData['name'] != null) {
+            displayName = userData['name'] as String;
+          }
+        }
+
+        return Card(
+          margin: const EdgeInsets.symmetric(
+            horizontal: 4,
+            vertical: 4,
+          ),
+          child: ListTile(
+            title: Text(
+              'Student : $displayName',
+              style: const TextStyle(fontSize: 14),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Score : $score / $totalMarks '
+                  '(${percent.toStringAsFixed(1)}%)',
+                ),
+                Text(
+                  'Correct : $correctCount • Wrong : $wrongCount',
+                ),
+                if (completedAt != null)
+                  Text(
+                    'Completed : ${completedAt.toLocal()}',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+              ],
+            ),
+            onTap: () {
+              //detailed analysis compltete karna h
+            },
+          ),
+        );
+      },
     );
   }
 }
