@@ -30,7 +30,7 @@ class TeacherDashboardPage extends StatelessWidget {
         child: ListView(
           children: [
             const Text(
-              "Welcome Teacher 👩‍🏫",
+              "Welcome Dear Teacher",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),

@@ -73,7 +73,7 @@ class _AuthScreenState extends State<AuthScreen> {
       ScaffoldMessenger.of(context)
         ..clearSnackBars()
         ..showSnackBar(
-          SnackBar(content: Text(error.message ?? 'Authentication Failed 😣')),
+          SnackBar(content: Text(error.message ?? 'Authentication Failed')),
         );
     } catch (e) {
       ScaffoldMessenger.of(context)

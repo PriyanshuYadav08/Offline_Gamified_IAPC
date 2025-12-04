@@ -10,7 +10,7 @@ class DashboardPage extends StatelessWidget {
 
   // Student game list
   static const List<Map<String, dynamic>> games = [
-    {'title': 'Math Quiz', 'icon': Icons.calculate},
+    // {'title': 'Math Quiz', 'icon': Icons.calculate},
     {'title': 'See Live Quizzes', 'icon': Icons.quiz},
     // {'title': 'Physics Puzzle', 'icon': Icons.science},
     // {'title': 'Chemistry Match', 'icon': Icons.bubble_chart},
@@ -65,7 +65,7 @@ class DashboardPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Choose a Game/Test',
+                  'Choose a Lesson/Test',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 const SizedBox(height: 16),
@@ -96,7 +96,7 @@ class DashboardPage extends StatelessWidget {
                                 ),
                               );
                             } else {
-                              // TODO: Navigate to other game/test pages
+                              //other lessons
                             }
                           },
                           child: Column(

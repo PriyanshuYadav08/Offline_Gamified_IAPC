@@ -51,7 +51,7 @@ class _QuizAttemptPageState extends State<QuizAttemptPage> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Failed to load questions: $e')));
+      ).showSnackBar(SnackBar(content: Text('Failed to load questions : $e')));
       setState(() => _isLoading = false);
     }
   }

@@ -19,7 +19,7 @@ class StudentsInClassPage extends StatelessWidget {
         .get();
 
     final className = doc.data()?['class'];
-    print('Teacher class from Firestore: $className');
+    print('Teacher class from Firestore : $className');
     return className;
   }
 
@@ -36,7 +36,7 @@ class StudentsInClassPage extends StatelessWidget {
 
         if (snapshot.hasError) {
           return Scaffold(
-            body: Center(child: Text('Error: ${snapshot.error}')),
+            body: Center(child: Text('Error : ${snapshot.error}')),
           );
         }
 

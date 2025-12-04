@@ -31,20 +31,26 @@
 ```
 lib/
  ├── main.dart
- ├── core/             # Config, themes, constants
- ├── auth/             # Login, signup, role management
- ├── student/          # Student dashboard, games, gamification
- │   ├── games/        # Flame games (quiz, puzzle, etc.)
- │   ├── models/       # XP, progress, badges
- │   ├── services/     # Game logic, sync
- │   └── widgets/
- ├── teacher/          # Teacher dashboard
- │   ├── analytics/    # Charts, reports
- │   ├── assignments/  # Quests & tasks
- │   └── widgets/
- ├── services/         # Firebase, Hive/Drift, notifications
- ├── localization/     # i18n JSONs
- └── utils/            # Helpers
+ ├── firebase_options.dart
+ ├── auth/
+ │   ├── auth.dart
+ ├── dashboard/          
+ │   ├── dashboard_page.dart
+ │   ├── teacher_dashboard.dart
+ ├── profile/          
+ │   ├── edit_profile.dart    
+ │   ├── user_profile.dart  
+ ├── services/          
+ │   ├── firebase_services.dart
+ ├── student_functions/          
+ │   ├── live_quizzes.dart    
+ │   ├── quiz_attempt.dart
+ │   ├── quiz_result.dart
+ ├── teacher_functions/          
+ │   ├── create_quiz.dart    
+ │   ├── quiz_analytics.dart
+ │   ├── students_in_class.dart    
+ │   ├── teacher_options.dart 
 ```
 
 ---

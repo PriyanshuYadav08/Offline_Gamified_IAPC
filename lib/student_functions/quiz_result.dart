@@ -135,9 +135,9 @@ class QuizResultPage extends StatelessWidget {
 
   // Helper: label based on percentage
   static String _performanceLabel(double percent) {
-    if (percent >= 90) return 'Excellent!';
-    if (percent >= 75) return 'Great job!';
-    if (percent >= 50) return 'Good effort, keep practicing';
+    if (percent >= 90) return 'Excellent...Keep up the great work!';
+    if (percent >= 75) return 'Great Job...Keep practicing';
+    if (percent >= 50) return 'Good Effort...Keep improving';
     return 'Keep trying, you can improve';
   }
 

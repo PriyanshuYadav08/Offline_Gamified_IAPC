@@ -88,22 +88,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
         });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("You are now a teacher! ✅")),
+            const SnackBar(content: Text("You are now a teacher!")),
           );
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(const SnackBar(content: Text("Invalid passcode ❌")));
+          ).showSnackBar(const SnackBar(content: Text("Invalid Passcode")));
         }
       }
     } catch (e) {
-      print("Error verifying passcode: $e");
+      print("Error verifying passcode : $e");
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("Error: $e")));
+        ).showSnackBar(SnackBar(content: Text("Error : $e")));
       }
     }
   }
