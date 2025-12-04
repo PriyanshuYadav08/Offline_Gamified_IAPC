@@ -15,6 +15,8 @@ class TeacherQuizzesAnalyticsPage extends StatelessWidget {
         .where('createdBy', isEqualTo: uid);
         // .orderBy('createdAt', descending: true);
 
+    // print('Quiz loading error : $uid');
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Quizzes Analytics'),
@@ -24,7 +26,7 @@ class TeacherQuizzesAnalyticsPage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
-              child: Text('Error loading quizzes: ${snapshot.error}'),
+              child: Text('Error loading quizzes : ${snapshot.error}'),
             );
           }
 

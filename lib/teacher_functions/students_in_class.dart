@@ -83,8 +83,8 @@ class StudentsInClassPage extends StatelessWidget {
                   return ListTile(
                     leading: const Icon(Icons.person),
                     title: Text(student['name'] ?? 'Unnamed'),
-                    subtitle: Text('Email: ${student['email'] ?? '-'}'),
-                    trailing: Text('XP: ${student['xp'] ?? 0}'),
+                    subtitle: Text('Email : ${student['email'] ?? '-'}'),
+                    trailing: Text('XP : ${student['xp'] ?? 0}'),
                   );
                 },
               );

@@ -18,20 +18,20 @@ class QuizAnalyticsDetailPage extends StatelessWidget {
     final className = quizData['class'] ?? '';
     final totalQuestions = quizData['totalQuestions'] ?? 0;
     final duration = quizData['duration'] ?? 0;
-
+    
     final attemptsQuery = FirebaseFirestore.instance
         .collection('quiz_attempts')
         .where('quizId', isEqualTo: quizId);
         // .orderBy('completedAt', descending: true);
 
     return Scaffold(
-      appBar: AppBar(title: Text('Analytics: $title')),
+      appBar: AppBar(title: Text('Analytics : $title')),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: attemptsQuery.snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
-              child: Text('Error loading attempts: ${snapshot.error}'),
+              child: Text('Error loading attempts : ${snapshot.error}'),
             );
           }
 
@@ -143,22 +143,22 @@ class QuizAnalyticsDetailPage extends StatelessWidget {
                         ),
                         child: ListTile(
                           title: Text(
-                            'Student: $studentId', // Optional: replace with name
+                            'Student : ${data['name'] ?? studentId}',
                             style: const TextStyle(fontSize: 14),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Score: $score / $totalMarks '
+                                'Score : $score / $totalMarks '
                                 '(${percent.toStringAsFixed(1)}%)',
                               ),
                               Text(
-                                'Correct: $correctCount • Wrong: $wrongCount',
+                                'Correct : $correctCount • Wrong : $wrongCount',
                               ),
                               if (completedAt != null)
                                 Text(
-                                  'Completed: ${completedAt.toLocal()}',
+                                  'Completed : ${completedAt.toLocal()}',
                                   style: const TextStyle(fontSize: 12),
                                 ),
                             ],
@@ -207,7 +207,7 @@ class _QuizHeader extends StatelessWidget {
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
-        Text('$subject • Class: $className'),
+        Text('$subject • Class : $className'),
         Text('$totalQuestions Questions • $duration min'),
       ],
     );
