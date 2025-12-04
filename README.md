@@ -5,24 +5,22 @@
 ---
 
 ## 📚 Project Overview
-- **Students**: Play interactive STEM games (quizzes, puzzles, simulations) even without internet.
-- **Teachers**: Track progress, mastery, and assignments via dashboards.
-- **Gamification**: Points, XP, streaks, badges, avatars, and class leaderboards.
-- **Offline-First**: Hive/Drift (local DB), background sync, and offline caching.
-- **Multilingual**: Localized STEM content packs (English, Hindi, etc.).
+- **Students -** Play interactive STEM games (quizzes, puzzles, simulations) even without internet.
+- **Teachers -** Track progress, mastery, and assignments via dashboards.
+- **Gamification -** Points, XP, streaks, badges, avatars, and class leaderboards.
+- **Offline-First -** Hive/Drift (local DB), background sync, and offline caching.
+- **Multilingual -** Localized STEM content packs (English, Hindi, etc.).
 
 ---
 
-
 ## 🛠️ Tech Stack (Flutter App)
-**Frontend (App):** Flutter (Dart)
-**Game Engine:** Flame (mini-games, animations)
-**UI Components:** Material 3 + Riverpod/Bloc (state management)
-**Offline Storage:** Hive / Drift (SQLite wrapper)
-**Backend:** Firebase (Auth, Firestore, Storage, Cloud Functions)
-**Multilingual:** Flutter Intl / easy_localization
-**Charts:** fl_chart (teacher dashboards)
-**Notifications:** Firebase Cloud Messaging
+- **Frontend (App) -** Flutter (Dart)
+- **UI Components -** Material 3 + Riverpod/Bloc (state management)
+- **Offline Storage -** Hive / Drift (SQLite wrapper)
+- **Backend -** Firebase (Auth, Firestore, Storage, Cloud Functions)
+- **Multilingual -** Flutter Intl / easy_localization
+- **Charts -** fl_chart (teacher dashboards)
+- **Notifications -** Firebase Cloud Messaging
 
 ---
 
